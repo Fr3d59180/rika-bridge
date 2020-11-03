@@ -83,8 +83,8 @@ def main():
 
     # Fill in your details here to be posted to the login form.
     payload = {
-        'email': 'fr3d.mobile@gmail.com',
-        'password': 'Dj@ng059'
+        'email': credential.api_email,
+        'password': credential.api_password
     }
 
     # Use 'with' to ensure the session context is closed after use.
