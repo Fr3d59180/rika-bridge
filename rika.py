@@ -12,14 +12,17 @@ from influxdb import InfluxDBClient
 import datetime
 import time
 
+import credential
+#login(credential.username, credential.password)
+
 ville = "cappelle-la-grande"
 myapi = "cf1cc9f567a1427aa85f4cc553727ff1"
 
 
 LOGIN_URL = "https://www.rika-firenet.com/web/login"
 INFLUXDB_ADDRESS = 'picollo.duckdns.org'
-INFLUXDB_USER = 'root'
-INFLUXDB_PASSWORD = 'root'
+INFLUXDB_USER = credential.influxdb_user
+INFLUXDB_PASSWORD = credential.influxdb_password
 INFLUXDB_DATABASE = 'rika_db'
 
 influxdb_client = InfluxDBClient(INFLUXDB_ADDRESS, 8086, INFLUXDB_USER, INFLUXDB_PASSWORD, None)
