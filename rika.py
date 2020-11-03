@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+#-*- coding: utf-8 -*-
+#cf1cc9f567a1427aa85f4cc553727ff1
+
 import requests
 import os
 import sys
@@ -6,7 +9,11 @@ import json
 import re
 from typing import NamedTuple
 from influxdb import InfluxDBClient
+import datetime
+import time
 
+ville = "cappelle-la-grande"
+myapi = "cf1cc9f567a1427aa85f4cc553727ff1"
 
 
 LOGIN_URL = "https://www.rika-firenet.com/web/login"
@@ -16,12 +23,31 @@ INFLUXDB_PASSWORD = 'root'
 INFLUXDB_DATABASE = 'rika_db'
 
 influxdb_client = InfluxDBClient(INFLUXDB_ADDRESS, 8086, INFLUXDB_USER, INFLUXDB_PASSWORD, None)
-#location = "salon"
+location = "salon"
 
 class RikaData(NamedTuple):
     location: str
     measurement: str
     value: float
+
+def _MyLittleMeteo():
+    url_weather = "http://api.openweathermap.org/data/2.5/weather?q="+ville+"&APPID="+myapi
+    r_weather = requests.get(url_weather)
+    data = r_weather.json()
+    #print(data)
+    print("my little meteo à " + ville)
+    eTemperature = data['main']['temp']
+    #print("La temperature moyenne est de {0:.1f} degres Celsius ".format(eTemperature-273.15))
+    eHumidite = data['main']['humidity']
+    #print("Taux d'humidite de {}".format(eHumidite) + "%")
+
+    value = round((eTemperature-273.15),2)
+    measurement = "eTemperature"
+    _send_rika_data_to_influxdb(location, measurement, value)
+
+    value = eHumidite
+    measurement = "eHumidite"
+    _send_rika_data_to_influxdb(location, measurement, value)
 
 def _send_rika_data_to_influxdb(loc, mea, val):
     json_body = [
@@ -50,6 +76,7 @@ def _init_influxdb_database():
 def main():
 
     _init_influxdb_database()
+    _MyLittleMeteo()
 
     # Fill in your details here to be posted to the login form.
     payload = {
@@ -65,7 +92,7 @@ def main():
         rika_dict = s.get('https://www.rika-firenet.com/api/client/93933394/status')
         doublequote_dict = json.dumps(rika_dict.json())
         #print(doublequote_dict)
-        print()
+        #print()
 
         usuable_dict = json.loads(doublequote_dict)
         controls_dict = (usuable_dict["controls"])
@@ -73,7 +100,7 @@ def main():
         stoveFeatures = (usuable_dict["stoveFeatures"])
         #print(sensors_dict)
 
-        location = "salon"
+        #location = "salon"
 
 
         inputRoomTemperature_value = float(sensors_dict["inputRoomTemperature"])
