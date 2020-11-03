@@ -13,14 +13,14 @@ import paho.mqtt.client as mqtt
 from influxdb import InfluxDBClient
 
 #INFLUXDB_ADDRESS = '192.168.0.19'
-INFLUXDB_ADDRESS = 'picollo.duckdns.org'
+INFLUXDB_ADDRESS = ''
 INFLUXDB_USER = ''
 INFLUXDB_PASSWORD = ''
-INFLUXDB_DATABASE = 'kapl_db'
+INFLUXDB_DATABASE = ''
 
-MQTT_ADDRESS = '192.168.0.19'
-MQTT_USER = 'pi'
-MQTT_PASSWORD = 'jama'
+MQTT_ADDRESS = ''
+MQTT_USER = ''
+MQTT_PASSWORD = ''
 MQTT_TOPIC = 'kapl/+/+/+/+'  # kapl/[Ch-nord|Ch-sud|Ch-est|SalleDeBain|Salon|Cuisine|Garage}/DHTtoMQTT/dht/[temp|hum]
 
 MQTT_REGEX = 'kapl/([^/]+)/([^/]+)/([^/]+)/([^/]+)'
