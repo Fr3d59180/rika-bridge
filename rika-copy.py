@@ -177,11 +177,4 @@ def main():
 if __name__ == '__main__':
     main()
 
-#'operatingMode_value', 'tags': {'location': 'salon'}, 'fields': {'value': 0}}]
-#0 manual, 1 automatique, 2 confort
-
-#'ponOff_value', 'tags': {'location': 'salon'}, 'fields': {'value': False}}]
-#false eteint, true allumé
-
-#'targetTemperature_value', 'tags': {'location': 'salon'}, 'fields': {'value': '20'}}]
-# consigne de T° pour le mode confort
+# See PyCharm help at https://www.jetbrains.com/help/pycharm/

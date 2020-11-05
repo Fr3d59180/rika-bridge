@@ -2,6 +2,11 @@
 #-*- coding: utf-8 -*-
 #cf1cc9f567a1427aa85f4cc553727ff1
 
+## recuperer T°& H% exterieur
+## T° ambiante, flamme, mode, consigne de T°
+## conso et utilisation
+## toute les 5mins(crontab)
+
 import requests
 import os
 import sys
@@ -23,10 +28,10 @@ LOGIN_URL = "https://www.rika-firenet.com/web/login"
 INFLUXDB_ADDRESS = 'picollo.duckdns.org'
 INFLUXDB_USER = credential.influxdb_user
 INFLUXDB_PASSWORD = credential.influxdb_password
-INFLUXDB_DATABASE = 'rika_db'
+INFLUXDB_DATABASE = 'Ambiente-rika_db'
 
 influxdb_client = InfluxDBClient(INFLUXDB_ADDRESS, 8086, INFLUXDB_USER, INFLUXDB_PASSWORD, None)
-location = "salon"
+location = ""
 
 class RikaData(NamedTuple):
     location: str
@@ -44,13 +49,14 @@ def _MyLittleMeteo():
     eHumidite = data['main']['humidity']
     #print("Taux d'humidite de {}".format(eHumidite) + "%")
 
+    #externe temp
     value = round((eTemperature-273.15),2)
     eTemperature = value
-    measurement = "eTemperature"
+    measurement = "ext_Temperature"
     _send_rika_data_to_influxdb(location, measurement, value)
-
+    #externe humidité
     value = eHumidite
-    measurement = "eHumidite"
+    measurement = "ext_Humidite"
     _send_rika_data_to_influxdb(location, measurement, value)
 
 def _send_rika_data_to_influxdb(loc, mea, val):
@@ -66,7 +72,7 @@ def _send_rika_data_to_influxdb(loc, mea, val):
                     }
     ]
     influxdb_client.write_points(json_body)
-    print(json_body)
+    ##print(json_body)
 
 
 def _init_influxdb_database():
@@ -95,83 +101,57 @@ def main():
         # An authorised request.
         rika_dict = s.get('https://www.rika-firenet.com/api/client/93933394/status')
         doublequote_dict = json.dumps(rika_dict.json())
-        print(doublequote_dict)
+        #print(doublequote_dict)
         #print()
 
         usuable_dict = json.loads(doublequote_dict)
         controls_dict = (usuable_dict["controls"])
         sensors_dict = (usuable_dict["sensors"])
         stoveFeatures = (usuable_dict["stoveFeatures"])
-        #print(sensors_dict)
+        print(" controls ")
+        print(controls_dict)
+        print("")
 
-        #location = "salon"
+        print(" sensors ")
+        print(sensors_dict)
+        print("")
 
+        print(" features ")
+        print(stoveFeatures)
+        print("")
 
+        """
+        #thermostat
         inputRoomTemperature_value = float(sensors_dict["inputRoomTemperature"])
         value = inputRoomTemperature_value
         measurement = "inputRoomTemperature_value"
         _send_rika_data_to_influxdb(location, measurement, value)
-
+	#flamme
         inputFlameTemperature_value = (sensors_dict["inputFlameTemperature"])
         value = inputFlameTemperature_value
         measurement = "inputFlameTemperature_value"
         _send_rika_data_to_influxdb(location, measurement, value)
-
+	#utilisation
         parameterRuntimePellets_value = (sensors_dict["parameterRuntimePellets"])
         value = parameterRuntimePellets_value
         measurement = "parameterRuntimePellets_value"
         _send_rika_data_to_influxdb(location, measurement, value)
-
+	#conso
         parameterFeedRateTotal_value = (sensors_dict["parameterFeedRateTotal"])
         value = parameterFeedRateTotal_value
         measurement = "parameterFeedRateTotal_value"
         _send_rika_data_to_influxdb(location, measurement, value)
-
-        parameterFeedRateService_value = (sensors_dict["parameterFeedRateService"])
-        value = parameterFeedRateService_value
-        measurement = "parameterFeedRateService_value"
-        _send_rika_data_to_influxdb(location, measurement, value)
-        """
-        print('Flame    Temperature value : ' + str (inputFlameTemperature_value))
-        print('Runtime  Pellets value : ' + str (parameterRuntimePellets_value))
-        print('FeedRate Total value : ' + str (parameterFeedRateTotal_value))
-        print('FeedRate Service value : ' + str (parameterFeedRateService_value))
-        """
-
-
-        onOff_value = (controls_dict["onOff"])
-        value = onOff_value
-        measurement = "ponOff_value"
-        _send_rika_data_to_influxdb(location, measurement, value)
-
+	#mode 0=auto, 1=manu, 2=conf
         operatingMode_value = (controls_dict["operatingMode"])
         value = operatingMode_value
         measurement = "operatingMode_value"
         _send_rika_data_to_influxdb(location, measurement, value)
-
-        heatingPower_value = (controls_dict["heatingPower"])
-        value = heatingPower_value
-        measurement = "heatingPower_value"
-        _send_rika_data_to_influxdb(location, measurement, value)
-
+	### consigne
         targetTemperature_value = (controls_dict["targetTemperature"])
         value = targetTemperature_value
         measurement = "targetTemperature_value"
         _send_rika_data_to_influxdb(location, measurement, value)
-
-        ecoMode_value = (controls_dict["ecoMode"])
-        value = ecoMode_value
-        measurement = "ecoMode_value"
-        _send_rika_data_to_influxdb(location, measurement, value)
         """
-        print ('onOff value : ' + str (onOff_value))
-        print ('operatingMode value : ' + str (operatingMode_value))
-        print ('heatingPower value : ' + str (heatingPower_value))
-        print ('targetTemperature value : ' + str (targetTemperature_value))
-        print ('ecoMode value : ' + str (ecoMode_value))
-        """
-        #if rika_data is not None:
-        #    send_rika_data_to_influxdb(rika_data)
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
