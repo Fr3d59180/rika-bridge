@@ -11,13 +11,13 @@ from typing import NamedTuple
 from influxdb import InfluxDBClient
 import datetime
 import time
-
+import logging
 import credential
 #login(credential.username, credential.password)
 
+logger = logging.getLogger(__name__)
 ville = "cappelle-la-grande"
 myapi = "cf1cc9f567a1427aa85f4cc553727ff1"
-
 
 LOGIN_URL = "https://www.rika-firenet.com/web/login"
 INFLUXDB_ADDRESS = 'picollo.duckdns.org'
@@ -34,6 +34,11 @@ class RikaData(NamedTuple):
     value: float
 
 def _MyLittleMeteo():
+    #logging.warning('Watch out!')  # will print a message to the console
+    #logging.debug('Watch out!')  # print a message to the console
+    #logging.info('nothing')  # will not print anything
+
+    print('start_MyLittleMeteo')  # will not print anything
     url_weather = "http://api.openweathermap.org/data/2.5/weather?q="+ville+"&APPID="+myapi
     r_weather = requests.get(url_weather)
     dataW = r_weather.json()
@@ -44,7 +49,6 @@ def _MyLittleMeteo():
     eHumidite = dataW['main']['humidity']
     #print("Taux d'humidite de {}".format(eHumidite) + "%")
 
-    
     value = round((eTemperature-273.15),2)
     measurement = "eTemperature"
     send_payload([create_payload(location, measurement, value)])
@@ -52,6 +56,7 @@ def _MyLittleMeteo():
     value = eHumidite
     measurement = "eHumidite"
     send_payload([create_payload(location, measurement, value)])
+    logging.debug('finish_MyLittleMeteo')  # will not print anything
 
 def create_payload(loc, mea, val):
     return {
@@ -66,17 +71,18 @@ def create_payload(loc, mea, val):
 
 def send_payload(payload):
     influxdb_client.write_points(payload)
-
+    print('sending payload' +str(payload))  # will not print anything
 
 def _init_influxdb_database():
     databases = influxdb_client.get_list_database()
     if len(list(filter(lambda x: x['name'] == INFLUXDB_DATABASE, databases))) == 0:
         influxdb_client.create_database(INFLUXDB_DATABASE)
+        print('create database')  # will not print anything
     influxdb_client.switch_database(INFLUXDB_DATABASE)
-
+    print('use this database : ' +str(INFLUXDB_DATABASE))  # will not print anything
 
 def main():
-
+    print('main start')  # will not print anything
     _init_influxdb_database()
     _MyLittleMeteo()
 
@@ -98,19 +104,31 @@ def main():
         sensors_dict = (usuable_dict["sensors"])
         stoveFeatures = (usuable_dict["stoveFeatures"])
         #print(sensors_dict)
-
+        print('dict acquired')  # will not print anything
         #location = "salon"
 
         measurements = [
             "inputRoomTemperature",
-            "inputFlameTemperature_value",
-            "parameterRuntimePellets_value",
-            "parameterFeedRateTotal",
-            "parameterFeedRateService"
+            #"inputFlameTemperature",
+            #"parameterRuntimePellets",
+            #"parameterFeedRateTotal",
+            #"parameterFeedfRateService"
         ]
 
         payload = [create_payload(location, f"{measurement}_value", float(sensors_dict[measurement])) for measurement in measurements]
 
+        send_payload(payload)
+
+        measurements = [
+            #"inputRoomTemperature",
+            "inputFlameTemperature",
+            "parameterRuntimePellets",
+            "parameterFeedRateTotal",
+            "parameterFeedRateService"
+        ]
+
+        payload = [create_payload(location, f"{measurement}_value", sensors_dict[measurement]) for measurement in measurements]
+        #payload = [create_payload(location, f"{measurement}_value", controls_dict[measurement]) for measurement in measurements]
         send_payload(payload)
 
         """
@@ -135,7 +153,7 @@ def main():
         """
         #if rika_data is not None:
         #    send_rika_data_to_influxdb(rika_data)
-
+        print('payloads sended')  # will not print anything
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     main()
