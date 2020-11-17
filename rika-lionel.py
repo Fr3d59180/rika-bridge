@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #-*- coding: utf-8 -*-
-#cf1cc9f567a1427aa85f4cc553727ff1
+#xxx
 
 import requests
 import os
@@ -17,13 +17,13 @@ import credential
 
 logger = logging.getLogger(__name__)
 ville = "cappelle-la-grande"
-myapi = "cf1cc9f567a1427aa85f4cc553727ff1"
+myapi = "xxx"
 
 LOGIN_URL = "https://www.rika-firenet.com/web/login"
-INFLUXDB_ADDRESS = 'picollo.duckdns.org'
+INFLUXDB_ADDRESS = 'xxx.duckdns.org'
 INFLUXDB_USER = credential.influxdb_user
 INFLUXDB_PASSWORD = credential.influxdb_password
-INFLUXDB_DATABASE = 'rika_db'
+INFLUXDB_DATABASE = 'xxx_db'
 
 influxdb_client = InfluxDBClient(INFLUXDB_ADDRESS, 8086, INFLUXDB_USER, INFLUXDB_PASSWORD, None)
 location = "salon"
@@ -97,7 +97,7 @@ def main():
         p = s.post(LOGIN_URL, data=payload)
 
         # An authorised request.
-        rika_dict = s.get('https://www.rika-firenet.com/api/client/93933394/status')
+        rika_dict = s.get('https://www.rika-firenet.com/api/client/xxx/status')
 
         usuable_dict = rika_dict.json()
         controls_dict = (usuable_dict["controls"])
