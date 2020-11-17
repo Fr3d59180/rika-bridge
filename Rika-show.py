@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #-*- coding: utf-8 -*-
-#cf1cc9f567a1427aa85f4cc553727ff1
+#
 
 ## recuperer T°& H% exterieur
 ## T° ambiante, flamme, mode, consigne de T°
@@ -21,7 +21,7 @@ import credential
 #login(credential.username, credential.password)
 
 ville = "cappelle-la-grande"
-myapi = "cf1cc9f567a1427aa85f4cc553727ff1"
+myapi = ""
 
 
 LOGIN_URL = "https://www.rika-firenet.com/web/login"
@@ -99,7 +99,7 @@ def main():
         p = s.post(LOGIN_URL, data=payload)
 
         # An authorised request.
-        rika_dict = s.get('https://www.rika-firenet.com/api/client/93933394/status')
+        rika_dict = s.get('https://www.rika-firenet.com/api/client/xxx/status')
         doublequote_dict = json.dumps(rika_dict.json())
         #print(doublequote_dict)
         #print()
