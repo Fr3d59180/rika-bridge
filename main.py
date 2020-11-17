@@ -10,10 +10,10 @@ from influxdb import InfluxDBClient
 
 
 LOGIN_URL = "https://www.rika-firenet.com/web/login"
-INFLUXDB_ADDRESS = 'picollo.duckdns.org'
-INFLUXDB_USER = 'root'
-INFLUXDB_PASSWORD = 'root'
-INFLUXDB_DATABASE = 'rika_db'
+INFLUXDB_ADDRESS = 'xxx.duckdns.org'
+INFLUXDB_USER = 'xxx'
+INFLUXDB_PASSWORD = 'xxx'
+INFLUXDB_DATABASE = 'xxx_db'
 
 influxdb_client = InfluxDBClient(INFLUXDB_ADDRESS, 8086, INFLUXDB_USER, INFLUXDB_PASSWORD, None)
 location = "salon"
@@ -53,8 +53,8 @@ def main():
 
     # Fill in your details here to be posted to the login form.
     payload = {
-        'email': 'fr3d.mobile@gmail.com',
-        'password': 'Dj@ng059'
+        'email': 'fxxx@gmail.com',
+        'password': 'Dxxx9'
     }
 
     # Use 'with' to ensure the session context is closed after use.
@@ -62,7 +62,7 @@ def main():
         p = s.post(LOGIN_URL, data=payload)
 
         # An authorised request.
-        rika_dict = s.get('https://www.rika-firenet.com/api/client/93933394/status')
+        rika_dict = s.get('https://www.rika-firenet.com/api/client/xxx/status')
         doublequote_dict = json.dumps(rika_dict.json())
         print(doublequote_dict)
         print()
