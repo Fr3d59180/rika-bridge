@@ -25,7 +25,7 @@ myapi = ""
 
 
 LOGIN_URL = "https://www.rika-firenet.com/web/login"
-INFLUXDB_ADDRESS = 'picollo.duckdns.org'
+INFLUXDB_ADDRESS = 'xxx.duckdns.org'
 INFLUXDB_USER = credential.influxdb_user
 INFLUXDB_PASSWORD = credential.influxdb_password
 INFLUXDB_DATABASE = 'Ambiente-rika_db'
